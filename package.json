@@ -4,5 +4,8 @@
   "main": "index.js",
   "repository": "https://github.com/MateuVieira/bootcamp-gostack-desafio-03.git",
   "author": "MateuVieira <mateus12v@hotmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
