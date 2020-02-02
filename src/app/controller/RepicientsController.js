@@ -26,6 +26,43 @@ class RepicientsController {
 
     return res.json(repicient);
   }
+
+  async update(req, res) {
+    const schema = Yup.object().shape({
+      name: Yup.string(),
+      rua: Yup.string(),
+      numero: Yup.number().positive(),
+      estado: Yup.string(),
+      cidade: Yup.string(),
+      complemento: Yup.string(),
+      cep: Yup.string().length(9),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Verification faild.' });
+    }
+
+    const repicient = await Repicient.findByPk(req.body.id);
+
+    if (!repicient) {
+      return res.status(401).json({ error: `Repicient don't exist.` });
+    }
+    const repicientUpdated = await repicient.update(req.body);
+
+    return res.json(repicientUpdated);
+  }
+
+  async delete(req, res) {
+    const repicient = await Repicient.findByPk(req.params.id);
+
+    if (!repicient) {
+      return res.status(401).json({ error: `Repicient don't exist.` });
+    }
+
+    await repicient.destroy();
+
+    return res.status(400);
+  }
 }
 
 export default new RepicientsController();

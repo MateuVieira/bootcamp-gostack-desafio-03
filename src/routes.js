@@ -20,6 +20,7 @@ routes.post('/users', UserController.store);
 routes.put('/users', UserController.update);
 
 routes.post('/repicients', RepicientsController.store);
+routes.put('/repicients', RepicientsController.update);
 
 routes.post('/files', upload.single('file'), FileController.store);
 
