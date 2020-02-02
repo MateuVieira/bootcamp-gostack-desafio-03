@@ -18,7 +18,7 @@ class File extends Model {
       }
     );
 
-    return this,
+    return this;
   }
 }
 
