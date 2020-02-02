@@ -4,9 +4,9 @@ import databaseConfig from '../config/database';
 
 import User from '../app/models/User';
 import File from '../app/models/File';
-import Recipient from '../app/models/Recipient';
+import Repicient from '../app/models/Repicient';
 
-const models = [User, File, Recipient];
+const models = [User, File, Repicient];
 
 class Database {
   constructor() {
