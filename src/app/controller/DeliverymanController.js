@@ -9,6 +9,16 @@ class DeliverymanController {
     return res.json(deliveryman);
   }
 
+  async show(req, res) {
+    const deliveryman = await Deliveryman.findByPk(req.params.id);
+
+    if (!deliveryman) {
+      return res.status(401).json({ error: 'Deliveryman does not exist.' });
+    }
+
+    return res.json(deliveryman);
+  }
+
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string()
