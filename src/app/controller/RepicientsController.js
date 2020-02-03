@@ -9,6 +9,16 @@ class RepicientsController {
     return res.json(repicientes);
   }
 
+  async show(req, res) {
+    const repicient = await Repicient.findByPk(req.params.id);
+
+    if (!repicient) {
+      return res.status(401).json({ error: `Repicient don't exist.` });
+    }
+
+    return res.json(repicient);
+  }
+
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),

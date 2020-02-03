@@ -20,6 +20,7 @@ routes.post('/users', UserController.store);
 routes.put('/users', UserController.update);
 
 routes.get('/repicients', RepicientsController.index);
+routes.get('/repicients/:id', RepicientsController.show);
 routes.post('/repicients', RepicientsController.store);
 routes.put('/repicients', RepicientsController.update);
 routes.delete('/repicients/:id', RepicientsController.delete);
