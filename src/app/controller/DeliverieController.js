@@ -1,8 +1,12 @@
 import * as Yup from 'yup';
 
+import Queue from '../../lib/Queue';
+
 import Repicient from '../models/Repicient';
 import Deliveryman from '../models/Deliveryman';
 import Deliverie from '../models/Deliverie';
+
+import CancellationMail from '../jobs/CancellationMail';
 
 class DeliverieController {
   async store(req, res) {
@@ -51,7 +55,7 @@ class DeliverieController {
       return res.status(400).json({ error: 'Validation faild.' });
     }
 
-    const { id, deliveryman_id, repicient_id, canceled_at } = req.body;
+    const { id, deliveryman_id, repicient_id } = req.body;
 
     const deliverie = await Deliverie.findByPk(id);
 
@@ -59,10 +63,10 @@ class DeliverieController {
       return res.status(401).json({ error: 'Deliverir does not exist.' });
     }
 
-    if (canceled_at) {
+    if (deliverie.canceled_at) {
       return res
         .status(401)
-        .json({ error: `Deliverie canceled at - ${canceled_at}.` });
+        .json({ error: `Deliverie canceled at - ${deliverie.canceled_at}.` });
     }
 
     if (repicient_id) {
@@ -83,8 +87,18 @@ class DeliverieController {
       }
     }
 
-    const { product } = await deliverie.update(req.body);
+    const { product, canceled_at } = await deliverie.update(req.body);
 
+    if (canceled_at) {
+      const repicient = await Repicient.findByPk(req.body.repicient_id);
+      const deliveryman = await Deliveryman.findByPk(req.body.deliveryman_id);
+
+      await Queue.add(CancellationMail.key, {
+        repicient,
+        deliveryman,
+        deliverie,
+      });
+    }
     return res.json({
       product,
       repicient_id,
