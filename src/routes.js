@@ -19,8 +19,10 @@ routes.use(authMiddleware);
 routes.post('/users', UserController.store);
 routes.put('/users', UserController.update);
 
+routes.get('/repicients', RepicientsController.index);
 routes.post('/repicients', RepicientsController.store);
 routes.put('/repicients', RepicientsController.update);
+routes.delete('/repicients/:id', RepicientsController.delete);
 
 routes.post('/files', upload.single('file'), FileController.store);
 

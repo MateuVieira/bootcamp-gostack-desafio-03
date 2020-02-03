@@ -3,6 +3,12 @@ import * as Yup from 'yup';
 import Repicient from '../models/Repicient';
 
 class RepicientsController {
+  async index(req, res) {
+    const repicientes = await Repicient.findAll();
+
+    return res.json(repicientes);
+  }
+
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
