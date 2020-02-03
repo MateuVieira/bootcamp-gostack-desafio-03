@@ -5,11 +5,45 @@ import Queue from '../../lib/Queue';
 import Repicient from '../models/Repicient';
 import Deliveryman from '../models/Deliveryman';
 import Deliverie from '../models/Deliverie';
+import File from '../models/File';
 
 import CancellationMail from '../jobs/CancellationMail';
 import NewDeliverieMail from '../jobs/NewDeliverieMail';
 
 class DeliverieController {
+  async index(req, res) {
+    const deliverie = await Deliverie.findAll({
+      include: [
+        {
+          model: Repicient,
+          as: 'repicient',
+          attributes: ['name'],
+          include: [
+            {
+              model: File,
+              as: 'avatar',
+              attributes: ['id', 'path', 'url'],
+            },
+          ],
+        },
+        {
+          model: Deliveryman,
+          as: 'deliveryman',
+          attributes: ['name', 'email'],
+          include: [
+            {
+              model: File,
+              as: 'avatar',
+              attributes: ['id', 'path', 'url'],
+            },
+          ],
+        },
+      ],
+    });
+
+    return res.json(deliverie);
+  }
+
   async store(req, res) {
     const schema = Yup.object().shape({
       product: Yup.string().required(),
@@ -111,6 +145,28 @@ class DeliverieController {
       repicient_id,
       deliveryman_id,
     });
+  }
+
+  async delete(req, res) {
+    const schema = Yup.object().shape({
+      id: Yup.number()
+        .min(1)
+        .positive(),
+    });
+
+    if (!(await schema.isValid(req.params.id))) {
+      return res.status(400).json({ error: 'Validation faild' });
+    }
+
+    const deliverie = await Deliverie.findByPk(req.params.id);
+
+    if (!deliverie) {
+      return res.status(401).json({ error: 'Deliverie does not exist.' });
+    }
+
+    await deliverie.destroy();
+
+    return res.json();
   }
 }
 
