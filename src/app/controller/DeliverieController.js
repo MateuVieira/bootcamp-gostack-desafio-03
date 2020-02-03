@@ -7,6 +7,7 @@ import Deliveryman from '../models/Deliveryman';
 import Deliverie from '../models/Deliverie';
 
 import CancellationMail from '../jobs/CancellationMail';
+import NewDeliverieMail from '../jobs/NewDeliverieMail';
 
 class DeliverieController {
   async store(req, res) {
@@ -35,6 +36,12 @@ class DeliverieController {
     }
 
     const deliverie = await Deliverie.create(req.body);
+
+    await Queue.add(NewDeliverieMail.key, {
+      repicient: repicientExist,
+      deliveryman: deliverymanExist,
+      deliverie,
+    });
 
     return res.json(deliverie);
   }

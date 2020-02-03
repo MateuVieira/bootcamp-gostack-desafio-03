@@ -2,10 +2,11 @@
 /* eslint-disable no-sequences */
 import Bee from 'bee-queue';
 import CancellationMail from '../app/jobs/CancellationMail';
+import NewDeliverieMail from '../app/jobs/NewDeliverieMail';
 
 import redisConfig from '../config/redis';
 
-const jobs = [CancellationMail];
+const jobs = [CancellationMail, NewDeliverieMail];
 
 class Queue {
   constructor() {
