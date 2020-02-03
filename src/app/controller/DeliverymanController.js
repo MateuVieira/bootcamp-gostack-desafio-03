@@ -3,6 +3,12 @@ import * as Yup from 'yup';
 import Deliveryman from '../models/Deliveryman';
 
 class DeliverymanController {
+  async index(req, res) {
+    const deliveryman = await Deliveryman.findAll();
+
+    return res.json(deliveryman);
+  }
+
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string()
