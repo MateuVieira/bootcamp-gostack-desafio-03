@@ -65,6 +65,18 @@ class DeliverymanController {
       avatar_id,
     });
   }
+
+  async delete(req, res) {
+    const deliveryman = await Deliveryman.findByPk(req.params.id);
+
+    if (!deliveryman) {
+      return res.status(401).json({ error: 'Deliveryman does not exist.' });
+    }
+
+    await deliveryman.destroy();
+
+    return res.status(200).json();
+  }
 }
 
 export default new DeliverymanController();

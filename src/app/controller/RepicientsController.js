@@ -77,7 +77,7 @@ class RepicientsController {
 
     await repicient.destroy();
 
-    return res.status(400);
+    return res.status(200).json();
   }
 }
 
