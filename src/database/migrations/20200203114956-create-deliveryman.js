@@ -1,6 +1,6 @@
 module.exports = {
   // eslint-disable-next-line prettier/prettier
-  up: (queryInterface, Sequelize) => queryInterface.createTable('deliveryman',
+  up: (queryInterface, Sequelize) => queryInterface.createTable('deliverymans',
     {
       id: {
         type: Sequelize.INTEGER,
@@ -35,5 +35,5 @@ module.exports = {
     }),
 
   // eslint-disable-next-line arrow-parens
-  down: (queryInterface) => queryInterface.dropTable('deliveryman'),
+  down: (queryInterface) => queryInterface.dropTable('deliverymans'),
 };
