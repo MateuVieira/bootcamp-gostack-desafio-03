@@ -1,6 +1,8 @@
 import * as Yup from 'yup';
 
 import Deliveryman from '../models/Deliveryman';
+import Delivery from '../models/Delivery';
+import Repicient from '../models/Repicient';
 
 class DeliverymanController {
   async index(req, res) {
@@ -10,13 +12,41 @@ class DeliverymanController {
   }
 
   async show(req, res) {
+    const schema = Yup.object().shape({
+      id: Yup.number()
+        .required()
+        .min(1)
+        .positive(),
+    });
+
+    if (!(await schema.isValid(req.params))) {
+      console.log('Teste -> ', req.params.id);
+      return res.status(400).json({ error: 'Validation faild.' });
+    }
+
     const deliveryman = await Deliveryman.findByPk(req.params.id);
 
     if (!deliveryman) {
       return res.status(401).json({ error: 'Deliveryman does not exist.' });
     }
 
-    return res.json(deliveryman);
+    const delivery = await Delivery.findAll({
+      where: {
+        deliveryman_id: req.params.id,
+        canceled_at: null,
+        end_date: null,
+      },
+      attributes: ['id', 'product', 'createdAt'],
+      include: [
+        {
+          model: Repicient,
+          as: 'repicient',
+          attributes: ['name', 'numero', 'rua', 'cidade', 'estado', 'cep'],
+        },
+      ],
+    });
+
+    return res.json(delivery);
   }
 
   async store(req, res) {
@@ -83,6 +113,17 @@ class DeliverymanController {
   }
 
   async delete(req, res) {
+    const schema = Yup.object().shape({
+      id: Yup.number()
+        .required()
+        .min(1)
+        .positive(),
+    });
+
+    if (!(await schema.isValid(req.params.id))) {
+      return res.status(400).json({ error: 'Validation faild.' });
+    }
+
     const deliveryman = await Deliveryman.findByPk(req.params.id);
 
     if (!deliveryman) {

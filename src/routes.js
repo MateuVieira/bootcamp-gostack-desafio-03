@@ -7,12 +7,14 @@ import SessionController from './app/controller/SessionController';
 import FileController from './app/controller/FileController';
 import RepicientsController from './app/controller/RepicientsController';
 import DeliverymanController from './app/controller/DeliverymanController';
-import DeliverieController from './app/controller/DeliverieController';
+import DeliveryController from './app/controller/DeliveryController';
 
 import authMiddleware from './app/middleware/auth';
 
 const routes = new Router();
 const upload = multer(multerConfig);
+
+routes.get('/deliverymans/:id/deliveries', DeliverymanController.show);
 
 routes.post('/sessions', SessionController.store);
 
@@ -28,15 +30,14 @@ routes.put('/repicients', RepicientsController.update);
 routes.delete('/repicients/:id', RepicientsController.delete);
 
 routes.get('/deliverymans', DeliverymanController.index);
-routes.get('/deliverymans/:id', DeliverymanController.show);
 routes.post('/deliverymans', DeliverymanController.store);
 routes.put('/deliverymans', DeliverymanController.update);
 routes.delete('/deliverymans/:id', DeliverymanController.delete);
 
-routes.get('/deliveries', DeliverieController.index);
-routes.post('/deliveries', DeliverieController.store);
-routes.put('/deliveries', DeliverieController.update);
-routes.delete('/deliveries', DeliverieController.delete);
+routes.get('/deliveries', DeliveryController.index);
+routes.post('/deliveries', DeliveryController.store);
+routes.put('/deliveries', DeliveryController.update);
+routes.delete('/deliveries', DeliveryController.delete);
 
 routes.post('/files', upload.single('file'), FileController.store);
 

@@ -4,7 +4,7 @@ import Queue from '../../lib/Queue';
 
 import Repicient from '../models/Repicient';
 import Deliveryman from '../models/Deliveryman';
-import Deliverie from '../models/Deliverie';
+import Delivery from '../models/Delivery';
 import File from '../models/File';
 
 import CancellationMail from '../jobs/CancellationMail';
@@ -12,7 +12,7 @@ import NewDeliverieMail from '../jobs/NewDeliverieMail';
 
 class DeliverieController {
   async index(req, res) {
-    const deliverie = await Deliverie.findAll({
+    const deliverie = await Delivery.findAll({
       include: [
         {
           model: Repicient,
@@ -69,7 +69,7 @@ class DeliverieController {
       return res.status(401).json({ error: 'Deliveryman does not exist.' });
     }
 
-    const deliverie = await Deliverie.create(req.body);
+    const deliverie = await Delivery.create(req.body);
 
     await Queue.add(NewDeliverieMail.key, {
       repicient: repicientExist,
@@ -98,7 +98,7 @@ class DeliverieController {
 
     const { id, deliveryman_id, repicient_id } = req.body;
 
-    const deliverie = await Deliverie.findByPk(id);
+    const deliverie = await Delivery.findByPk(id);
 
     if (!deliverie) {
       return res.status(401).json({ error: 'Deliverir does not exist.' });
@@ -107,7 +107,7 @@ class DeliverieController {
     if (deliverie.canceled_at) {
       return res
         .status(401)
-        .json({ error: `Deliverie canceled at - ${deliverie.canceled_at}.` });
+        .json({ error: `Delivery canceled at - ${deliverie.canceled_at}.` });
     }
 
     if (repicient_id) {
@@ -158,10 +158,16 @@ class DeliverieController {
       return res.status(400).json({ error: 'Validation faild' });
     }
 
-    const deliverie = await Deliverie.findByPk(req.params.id);
+    const deliverie = await Delivery.findByPk(req.params.id);
 
     if (!deliverie) {
-      return res.status(401).json({ error: 'Deliverie does not exist.' });
+      return res.status(401).json({ error: 'Delivery does not exist.' });
+    }
+
+    if (deliverie.start_date) {
+      return res.status(401).json({
+        error: `Cannot delete delivery because delivery has already been withdrawn.`,
+      });
     }
 
     await deliverie.destroy();

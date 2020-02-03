@@ -9,44 +9,44 @@ class CancellationMail {
   }
 
   async handle({ data }) {
-    const { deliverie, repicient, deliveryman } = data;
+    const { delivery, repicient, deliveryman } = data;
 
     console.log('Send email!');
 
-    if (deliverie.start_date) {
+    if (delivery.start_date) {
       await Mail.sendMail({
         to: `${deliveryman.name} <${deliveryman.email}>`,
-        subject: 'Deliverie cancelado.',
+        subject: 'Delivery cancelado.',
         template: 'cancellationAfterStart',
         context: {
           deliveryman: deliveryman.name,
           user: repicient.name,
           date: format(
-            parseISO(deliverie.canceled_at),
+            parseISO(delivery.canceled_at),
             "'dia' dd 'de' MMM', às' H:mm'h'",
             {
               locale: pt,
             }
           ),
-          deliverie_id: deliverie.id,
+          delivery_id: delivery.id,
         },
       });
     } else {
       await Mail.sendMail({
         to: `${deliveryman.name} <${deliveryman.email}>`,
-        subject: 'Deliverie cancelado.',
+        subject: 'Delivery cancelado.',
         template: 'cancellation',
         context: {
           deliveryman: deliveryman.name,
           user: repicient.name,
           date: format(
-            parseISO(deliverie.canceled_at),
+            parseISO(delivery.canceled_at),
             "'dia' dd 'de' MMM', às' H:mm'h'",
             {
               locale: pt,
             }
           ),
-          deliverie_id: deliverie.id,
+          delivery_id: delivery.id,
         },
       });
     }
