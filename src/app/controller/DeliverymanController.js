@@ -34,7 +34,36 @@ class DeliverymanController {
   }
 
   async update(req, res) {
-    return res.json();
+    const schema = Yup.object().shape({
+      id: Yup.number().min(1),
+      name: Yup.string().min(4),
+      email: Yup.string().email(),
+      avatar_id: Yup.number().min(1),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validation faild.' });
+    }
+
+    const { id, email } = req.body;
+
+    const deliveryman = await Deliveryman.findByPk(id);
+
+    if (email && email !== deliveryman.email) {
+      const deliverymanExist = await Deliveryman.findOne({ where: { email } });
+
+      if (deliverymanExist) {
+        return res.status(401).json({ error: 'Deliveryman already exists.' });
+      }
+    }
+
+    const { name, avatar_id } = await deliveryman.update(req.body);
+
+    return res.json({
+      name,
+      email,
+      avatar_id,
+    });
   }
 }
 
