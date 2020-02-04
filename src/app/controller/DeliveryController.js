@@ -10,9 +10,9 @@ import File from '../models/File';
 import CancellationMail from '../jobs/CancellationMail';
 import NewDeliverieMail from '../jobs/NewDeliverieMail';
 
-class DeliverieController {
+class DeliveryController {
   async index(req, res) {
-    const deliverie = await Delivery.findAll({
+    const delivery = await Delivery.findAll({
       include: [
         {
           model: Repicient,
@@ -41,7 +41,7 @@ class DeliverieController {
       ],
     });
 
-    return res.json(deliverie);
+    return res.json(delivery);
   }
 
   async store(req, res) {
@@ -69,15 +69,15 @@ class DeliverieController {
       return res.status(401).json({ error: 'Deliveryman does not exist.' });
     }
 
-    const deliverie = await Delivery.create(req.body);
+    const delivery = await Delivery.create(req.body);
 
     await Queue.add(NewDeliverieMail.key, {
       repicient: repicientExist,
       deliveryman: deliverymanExist,
-      deliverie,
+      delivery,
     });
 
-    return res.json(deliverie);
+    return res.json(delivery);
   }
 
   async update(req, res) {
@@ -98,16 +98,16 @@ class DeliverieController {
 
     const { id, deliveryman_id, repicient_id } = req.body;
 
-    const deliverie = await Delivery.findByPk(id);
+    const delivery = await Delivery.findByPk(id);
 
-    if (!deliverie) {
+    if (!delivery) {
       return res.status(401).json({ error: 'Deliverir does not exist.' });
     }
 
-    if (deliverie.canceled_at) {
+    if (delivery.canceled_at) {
       return res
         .status(401)
-        .json({ error: `Delivery canceled at - ${deliverie.canceled_at}.` });
+        .json({ error: `Delivery canceled at - ${delivery.canceled_at}.` });
     }
 
     if (repicient_id) {
@@ -128,7 +128,7 @@ class DeliverieController {
       }
     }
 
-    const { product, canceled_at } = await deliverie.update(req.body);
+    const { product, canceled_at } = await delivery.update(req.body);
 
     if (canceled_at) {
       const repicient = await Repicient.findByPk(req.body.repicient_id);
@@ -137,7 +137,7 @@ class DeliverieController {
       await Queue.add(CancellationMail.key, {
         repicient,
         deliveryman,
-        deliverie,
+        delivery,
       });
     }
     return res.json({
@@ -158,22 +158,22 @@ class DeliverieController {
       return res.status(400).json({ error: 'Validation faild' });
     }
 
-    const deliverie = await Delivery.findByPk(req.params.id);
+    const delivery = await Delivery.findByPk(req.params.id);
 
-    if (!deliverie) {
+    if (!delivery) {
       return res.status(401).json({ error: 'Delivery does not exist.' });
     }
 
-    if (deliverie.start_date) {
+    if (delivery.start_date) {
       return res.status(401).json({
         error: `Cannot delete delivery because delivery has already been withdrawn.`,
       });
     }
 
-    await deliverie.destroy();
+    await delivery.destroy();
 
     return res.json();
   }
 }
 
-export default new DeliverieController();
+export default new DeliveryController();

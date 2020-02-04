@@ -9,7 +9,7 @@ class NewDeliverieMail {
   }
 
   async handle({ data }) {
-    const { deliverie, repicient, deliveryman } = data;
+    const { delivery, repicient, deliveryman } = data;
 
     await Mail.sendMail({
       to: `${deliveryman.name} <${deliveryman.email}>`,
@@ -21,7 +21,7 @@ class NewDeliverieMail {
         date: format(new Date(), "'dia' dd 'de' MMM', às' H:mm'h'", {
           locale: pt,
         }),
-        deliverie_id: deliverie.id,
+        deliverie_id: delivery.id,
       },
     });
   }
