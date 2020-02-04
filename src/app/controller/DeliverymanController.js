@@ -20,7 +20,6 @@ class DeliverymanController {
     });
 
     if (!(await schema.isValid(req.params))) {
-      console.log('Teste -> ', req.params.id);
       return res.status(400).json({ error: 'Validation faild.' });
     }
 
