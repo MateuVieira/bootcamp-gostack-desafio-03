@@ -107,6 +107,10 @@ class DeliveriesController {
         .json({ error: 'Delivery has already been completed.' });
     }
 
+    if (!res.file) {
+      return res.status(401).json({ error: 'Signature no found.' });
+    }
+
     const { originalname: name, filename: path } = req.file;
 
     const file = await File.create({
