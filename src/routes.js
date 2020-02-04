@@ -16,6 +16,11 @@ const routes = new Router();
 const upload = multer(multerConfig);
 
 routes.get('/deliverymans/:id/deliveries', DeliveriesController.show);
+routes.put(
+  '/deliverymans/delivered',
+  upload.single('file'),
+  DeliveriesController.update
+);
 
 routes.get('/deliverymans/:id', DeliverymanController.show);
 
