@@ -9,6 +9,7 @@ import RepicientsController from './app/controller/RepicientsController';
 import DeliverymanController from './app/controller/DeliverymanController';
 import DeliveryController from './app/controller/DeliveryController';
 import DeliveriesController from './app/controller/DeliveriesController';
+import DeliveryProblemsController from './app/controller/DeliveryProblemsController';
 
 import authMiddleware from './app/middleware/auth';
 
@@ -23,6 +24,9 @@ routes.put(
 );
 
 routes.get('/deliverymans/:id', DeliverymanController.show);
+
+routes.get('/problems/:id', DeliveryProblemsController.index);
+routes.post('/problems/:id', DeliveryProblemsController.store);
 
 routes.post('/sessions', SessionController.store);
 
