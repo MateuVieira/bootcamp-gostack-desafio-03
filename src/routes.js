@@ -58,6 +58,8 @@ routes.delete('/deliveries', DeliveryController.delete);
 routes.get('/cancellation', CancellationDeliveryController.index);
 routes.put('/cancellation/:id', CancellationDeliveryController.update);
 
+routes.get('/start', StartDeliveryController.index);
+
 routes.post('/files', upload.single('file'), FileController.store);
 
 export default routes;

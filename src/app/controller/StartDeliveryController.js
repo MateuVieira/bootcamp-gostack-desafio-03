@@ -6,6 +6,24 @@ import Delivery from '../models/Delivery';
 import Deliveryman from '../models/Deliveryman';
 
 class StartDeliveryController {
+  async index(req, res) {
+    const delivery = await Delivery.findAll({
+      where: {
+        start_date: {
+          [Op.ne]: null,
+        },
+        canceled_at: {
+          [Op.eq]: null,
+        },
+        end_date: {
+          [Op.eq]: null,
+        },
+      },
+    });
+
+    return res.json(delivery);
+  }
+
   async update(req, res) {
     const schema = Yup.object().shape({
       id: Yup.number()
