@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import { Op } from 'sequelize';
 
 import Delivery from '../models/Delivery';
 import DeliveryProblems from '../models/DeliveryProblems';
@@ -9,6 +10,18 @@ import Queue from '../../lib/Queue';
 import CancellationMail from '../jobs/CancellationMail';
 
 class CancellationDeliveyController {
+  async index(req, res) {
+    const delivery = await Delivery.findAll({
+      where: {
+        canceled_at: {
+          [Op.ne]: null,
+        },
+      },
+    });
+
+    return res.json(delivery);
+  }
+
   async update(req, res) {
     const schema = Yup.object().shape({
       id: Yup.number()
@@ -30,7 +43,7 @@ class CancellationDeliveyController {
     const delivery = await Delivery.findByPk(deliveryProblem.delivery_id);
 
     if (delivery.canceled_at || delivery.end_date) {
-      return res.status(401).json({ error: 'Delivery already finish.' });
+      return res.status(401).json({ error: 'Delivery already finished.' });
     }
 
     const canceled_at = new Date();
